@@ -4,10 +4,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lk.zerocode.channelling.center.controller.request.BookingRequest;
 import lk.zerocode.channelling.center.controller.response.BookingResponse;
-import lk.zerocode.channelling.center.exception.BookingNotCreatedException;
-import lk.zerocode.channelling.center.exception.BookingNotFoundException;
-import lk.zerocode.channelling.center.exception.DoctorNotFoundException;
-import lk.zerocode.channelling.center.exception.PatientNotFoundException;
+import lk.zerocode.channelling.center.exception.*;
 import lk.zerocode.channelling.center.model.Booking;
 import lk.zerocode.channelling.center.model.Doctor;
 import lk.zerocode.channelling.center.model.Patient;
@@ -80,7 +77,7 @@ public class BookingServiceImpl implements BookingService {
 
         return response;
     }
-
+//meke getbookings kiyalai getpatientappointments kiyalai dekk thiynw
     @Override
     public List<BookingResponse> getBookings() {
         return bookingRepository.findAll().stream().map(booking -> {
@@ -97,11 +94,14 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public void cancelBooking(Long id) throws BookingNotFoundException{
+    public void cancelBooking(Long id) throws BookingNotFoundException, BusinessLogicException {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new BookingNotFoundException("Booking not found with ID: " + id));
+        if ("CANCELLED".equals(booking.getStatus())) {
+            throw new BusinessLogicException("Booking is already cancelled");
+        }
         booking.setStatus("CANCELLED");
-        bookingRepository.delete(booking);
+        bookingRepository.save(booking);
     }
 
 

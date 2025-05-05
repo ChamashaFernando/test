@@ -28,4 +28,21 @@ public class AppControllerAdviser {
         errorResponse.setError(e.getMessage());
         return errorResponse;
     }
+
+    @ResponseStatus(value = HttpStatus.CONFLICT)
+    @ExceptionHandler({BusinessLogicException.class})
+    public ErrorResponse businessLogicException(Exception e) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setError(e.getMessage());
+        return errorResponse;
+    }
+
+    @ResponseStatus(value = HttpStatus.CONFLICT)
+    @ExceptionHandler({InvalidRequestException.class})
+    public ErrorResponse handleInvalidRequestException(Exception e) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setError(e.getMessage());
+        return errorResponse;
+    }
+
 }
